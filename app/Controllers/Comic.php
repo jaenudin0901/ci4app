@@ -13,11 +13,11 @@ class Comic extends BaseController
     }
     public function index()
     {
-        $comics = $this->comicModel->findAll();
+        // $comics = $this->comicModel->findAll();
 
         $data = [
             'title' => 'List Comics',
-            'comic' => $comics
+            'comics' => $this->comicModel->getComic()
         ];
         //  cara koenk tanpa model\
         // $db = \Config\Database::connect();
@@ -31,7 +31,15 @@ class Comic extends BaseController
 
         return view('comic/index', $data);
     }
+    public function detail($slug)
+    {
+        $data = [
+            'title' => 'Detail Comic',
+            'comic' => $this->comicModel->getComic($slug)
+        ];
 
+        return view('comic/detail', $data);
+    }
 
     //--------------------------------------------------------------------
 

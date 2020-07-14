@@ -19,10 +19,10 @@
                     <?php $i = 1; ?>
                     <?php foreach ($comics as $comic) : ?>
                         <tr>
-                            <th scope="row"><?php $i++; ?></th>
-                            <td><img src="/img/<?php $comic['cover'] ?>" alt="" class="cover"></td>
-                            <td><?= $comic['cover']; ?></td>
-                            <td><a href="" class="btn btn-success">Detail</a></td>
+                            <th scope="row"><?= $i++; ?></th>
+                            <td><img src="/img/<?= $comic['cover']; ?>" alt="" class="cover"></td>
+                            <td><?= $comic['title']; ?></td>
+                            <td><a href="/comic/<?= $comic['slug']; ?>" class="btn btn-success">Detail</a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
