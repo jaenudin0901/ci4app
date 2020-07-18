@@ -42,6 +42,7 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		// $this->session = \Config\Services::session();
+		session();
 		$this->nama = 'Jaenudin';
 		// $this->comicModel = new\App\Models\ComicModel();
 	}
