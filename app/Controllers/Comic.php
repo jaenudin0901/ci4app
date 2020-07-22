@@ -68,11 +68,33 @@ class Comic extends BaseController
                     'required' => '{field} Komik Harus diisi.',
                     'is_unique' => '{field} komik sudah terdaftar.'
                 ]
+            ],
+            'cover' => [
+                'rules' => 'max_size[cover,1024]|is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'max_size' => ' Size over',
+                    'is_iamge' => 'Ypur choose not image',
+                    'mime__in' => 'Your chose not image'
+                ]
             ]
         ])) {
-            $validation = \Config\Services::validation();
-            return  redirect()->to('/comic/create')->withInput()->with('validation', $validation);
+            // $validation = \Config\Services::validation();
+            // return  redirect()->to('/comic/create')->withInput()->with('validation', $validation);
+            return  redirect()->to('/comic/create')->withInput();
         }
+
+        // get image
+        $fileCover = $this->request->getFile('cover');
+        // have image to upload
+        if (!$fileCover->getError() == 4) {
+            $nameCover = 'default.jpg';
+        } else {
+            // generate name cover random
+            $nameCover = $fileCover->getRandomName();
+            // move file cover
+            $fileCover = move('img', $nameCover);
+        }
+        // $nameCover = $fileCover->getName();
 
         $slug = url_title($this->request->getVar('title'), '-', true);
         $this->comicModel->save([
@@ -80,7 +102,7 @@ class Comic extends BaseController
             'slug' => $slug,
             'writer' => $this->request->getVar('writer'),
             'publisher' => $this->request->getVar('publisher'),
-            'cover' => $this->request->getVar('cover'),
+            'cover' => $nameCover
         ]);
 
         session()->setFlashdata('message', 'Data success added!');
@@ -89,6 +111,16 @@ class Comic extends BaseController
 
     public function delete($id)
     {
+        // search img from id
+        $comic = $this->comicModel->find($id);
+
+        // cek img not default.jpg
+        if ($comic['cover'] != 'default.jpg') {
+
+            // delete img
+            unlink('img/' . $comic['cover']);
+        }
+
         $this->comicModel->delete($id);
         session()->setFlashdata('message', 'Data deleted!');
         return redirect()->to('/comic');
@@ -123,10 +155,32 @@ class Comic extends BaseController
                     'required' => '{field} Komik Harus diisi.',
                     'is_unique' => '{field} komik sudah terdaftar.'
                 ]
+                ],
+            'cover' => [
+                'rules' => 'max_size[cover,1024]|is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'max_size' => ' Size over',
+                    'is_iamge' => 'Ypur choose not image',
+                    'mime__in' => 'Your chose not image'
+                ]
             ]
         ])) {
-            $validation = \Config\Services::validation();
-            return  redirect()->to('/comic/edit/' . $this->request->getVar('slug'))->withInput()->with('validation', $validation);
+    
+            return  redirect()->to('/comic/edit/' . $this->request->getVar('slug'))->withInput();
+        }
+
+        $fileCover = $this->request->getFile('cover');
+
+        // cek img a last
+        if($fileCover->getError()==4){
+            $nameCover= $this->request->getVar('coverLast');
+        } else {
+            // generete img random
+            $nameCover = $fileCover->getRandomName();
+            // move img
+            $fileCover->move('img', $nameCover);
+            // delete img last
+            unlink('img/' $this->request->getVar($coverLast));
         }
 
         $slug = url_title($this->request->getVar('title'), '-', true);
@@ -136,7 +190,7 @@ class Comic extends BaseController
             'slug' => $slug,
             'writer' => $this->request->getVar('writer'),
             'publisher' => $this->request->getVar('publisher'),
-            'cover' => $this->request->getVar('cover'),
+            'cover' => $nameCover
         ]);
 
         session()->setFlashdata('message', 'Data updated!');

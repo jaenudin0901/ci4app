@@ -20,8 +20,8 @@
 
                             <form action="/comic/<?= $comic['id']; ?>" method="post" class="d-inline">
                                 <?= csrf_field(); ?>
-                                <input type="hidden" name="'_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Your sure for delete?);">Delete</button>
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Your sure for delete?');">Delete</button>
                             </form>
                             <br><br>
                             <a href="/comic">Back To List Comics</a>
