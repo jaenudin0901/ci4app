@@ -92,7 +92,7 @@ class Comic extends BaseController
             // generate name cover random
             $nameCover = $fileCover->getRandomName();
             // move file cover
-            $fileCover = move('img', $nameCover);
+            $fileCover->move('img', $nameCover);
         }
         // $nameCover = $fileCover->getName();
 
@@ -155,7 +155,7 @@ class Comic extends BaseController
                     'required' => '{field} Komik Harus diisi.',
                     'is_unique' => '{field} komik sudah terdaftar.'
                 ]
-                ],
+            ],
             'cover' => [
                 'rules' => 'max_size[cover,1024]|is_image[cover]|mime_in[cover,image/jpg,image/jpeg,image/png]',
                 'errors' => [
@@ -165,22 +165,22 @@ class Comic extends BaseController
                 ]
             ]
         ])) {
-    
+
             return  redirect()->to('/comic/edit/' . $this->request->getVar('slug'))->withInput();
         }
 
         $fileCover = $this->request->getFile('cover');
 
         // cek img a last
-        if($fileCover->getError()==4){
-            $nameCover= $this->request->getVar('coverLast');
+        if ($fileCover->getError() == 4) {
+            $nameCover = $this->request->getVar('coverLast');
         } else {
             // generete img random
             $nameCover = $fileCover->getRandomName();
             // move img
             $fileCover->move('img', $nameCover);
             // delete img last
-            unlink('img/' $this->request->getVar($coverLast));
+            unlink('img/' . $this->request->getVar('coverLast'));
         }
 
         $slug = url_title($this->request->getVar('title'), '-', true);
